@@ -1,8 +1,8 @@
 import React from 'react';
-import Login from './src/pages/login';
+import Tela_de_inicio from './src/pages/Tela_de_inicio';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import TelaDeInicio from './src/pages/login';
+import TelaDeInicio from './src/pages/Tela_de_inicio';
 
 const Stack = createNativeStackNavigator();
 

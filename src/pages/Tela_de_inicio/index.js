@@ -1,11 +1,16 @@
 import React from 'react';
-import { Text, View, Button, TouchableOpacity } from 'react-native';
+import { Text, View, Button, TouchableOpacity, Image } from 'react-native';
 import styles from './styles';
 
 export default function TelaDeInicio() {
   return (
     <View style={styles.container}>  
-      <Text style={styles.white1}>NOME DO APP</Text>
+      <Image
+        style={{ width: 150, height: 100}}
+        source={require('./images/logo.png')}
+      />
+
+      <Text style={styles.white1}>S!MBORA</Text>
      
       <TouchableOpacity 
         style={styles.button}
