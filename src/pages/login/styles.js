@@ -15,20 +15,14 @@ const styles = StyleSheet.create({
 
     title: {
       fontSize: 50,
-      alignItems: "flex-end"
     },
 
-    teste: {
-
-
-
-    },
     buttons:{
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
       width: '90%',
-      paddingBottom: 50,
+      paddingBottom: 90,
     },
 
     input:{
