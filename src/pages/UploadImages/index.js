@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   View,
   Image,
@@ -9,33 +9,27 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
+import axios from "axios";
 
 import DefaultImage from "../../assets/document_icon.png";
 import style from "./style";
 import styles from "./style";
 
-const SERVER_URL = "http://localhost:3002";
-// const SERVER_URL = 'https://680f-2804-d59-857f-5600-6d4-c4ff-fe29-56a4.ngrok.io';
-
 const createFormData = (photo, body = {}) => {
-  const data = new FormData();
+  let data = new FormData();
 
   const currentPhoto = photo.assets[0];
 
+  const nameFormat = `${body.name}.${currentPhoto.fileName.split(".")[1]}`;
+  
   data.append("photo", {
-    name: currentPhoto.fileName,
+    name: nameFormat,
     type: currentPhoto.type,
     uri:
       Platform.OS === "ios"
         ? currentPhoto.uri.replace("file://", "")
         : currentPhoto.uri,
   });
-
-  data.append("name", body);
-
-  //   Object.keys(body).forEach((key) => {
-  //     data.append(key, body[key]);
-  //   });
 
   return data;
 };
@@ -52,35 +46,40 @@ const UploadImages = () => {
     });
   };
 
-  const handleUploadPhoto = () => {
-    const teste = createFormData(photo, { name });
-    console.log(teste);
-    // fetch(`${SERVER_URL}/api/upload`, {
-    //   method: "POST",
-    //   body: createFormData(photo, { name }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((response) => {
-    //     console.log("response", response);
-    //   })
-    //   .catch((error) => {
-    //     console.log("error", error);
-    //   });
+  const handleUploadPhoto = async () => {
+    const formData = createFormData(photo, { name });
+
+    (async () => {
+      try {
+          let response = await new Promise(resolve => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://192.168.1.67:3003/file/upload');
+            xhr.onload = function(e) {
+              resolve(xhr.response);
+            };
+            xhr.onerror = function () {
+              resolve(undefined);
+              console.error("** An error occurred during the XMLHttpRequest");
+            };
+            xhr.send(formData);
+         })
+        
+         if(response !== undefined) {
+          const {url, fileName } = JSON.parse(response);
+          await axios.post('http://192.168.1.67:3003/file/user', {
+            url,
+            fileName,
+            user: '625781c009dd7b412f1f9162'
+         });     
+        }
+      } catch (error) {
+        console.log(error);
+      } 
+      
+   })()
   };
 
   return (
-    // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    //   {photo && (
-    //     <>
-    //       <Image
-    //         source={{ uri: photo.assets[0].uri }}
-    //         style={{ width: 300, height: 300 }}
-    //       />
-    //       <Button title="Upload Photo" onPress={handleUploadPhoto} />
-    //     </>
-    //   )}
-    //   <Button title="Choose Photo" onPress={handleChoosePhoto} />
-    // </View>
     <View style={styles.container}>
       <View style={style.containerAction}>
         <View>
@@ -115,7 +114,8 @@ const UploadImages = () => {
         )}
       </View>
       <TouchableOpacity
-        style={style.uploadImage}
+        disabled={photo || name ? false : true}
+        style={photo && name ? style.uploadImage : style.uploadImageDisabled}
         onPress={() => handleUploadPhoto()}
       >
         <Text style={style.textUploadBtn}>Enviar Arquivo</Text>

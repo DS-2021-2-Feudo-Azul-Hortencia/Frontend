@@ -12,13 +12,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* <Stack.Screen
-          name="Criar Viagem"
-          component={Login}
-        /> */}
         <Stack.Screen
-          name="Criar Viagem"
+          name="UploadFiles"
           component={UploadImages}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

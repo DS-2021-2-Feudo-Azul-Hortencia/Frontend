@@ -55,5 +55,13 @@ export default StyleSheet.create({
         fontSize: 18,
         color: '#FFF',
         fontWeight: '700',
+    },
+    uploadImageDisabled: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#aaa',
+        width: widthScreen * 0.9,
+        borderRadius: 10,
+        height: 50,
     }
 });
