@@ -20,15 +20,11 @@ const TravelFiles = ({route}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
-        <Pressable 
-          onPress={handleBack}
-          style={({pressed}) => [styles.backButton, { backgroundColor: pressed ? '#2B529D' : '#3E67B1'}]}
-          >
-          <Text style={styles.backButtonText}>Voltar</Text>
-        </Pressable>
-        <Text style={styles.title}>{travel.name}</Text>
-      </View>
+      <Header
+        title={travel.name}
+        left="Voltar"
+        onLeft={handleBack}
+        />
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContainer}>
 
       </ScrollView>

@@ -1,8 +1,12 @@
 import {useState, useEffect} from 'react';
 import { Text, View, ScrollView, Pressable, Image, Modal, TextInput} from 'react-native'
 import styles from './styles';
+import Header from '../../components/Header';
 
 import Button from '../../components/Button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import api from '../../services';
 
 const TravelList = ({navigation, route}) => {
   const [start, setStart] = useState('');
@@ -10,72 +14,54 @@ const TravelList = ({navigation, route}) => {
 
   const [modal, setModal] = useState(false)
 
-  const [travels, setTravels] = useState([
-    { //0
-      name: 'Viagem da firma',
-      start: "2013-10-01T00:00:00.000Z",
-      end: "2013-10-01T00:00:00.000Z",
-      countries: ['Argentina', 'Brasil', 'Chile'],
-      cities: ['Ushuaia', 'El Calafate'],
-      files: [
-        
-      ]
-    },
-    { //1
-      name: 'Viagem com a família',
-      start: "2013-10-01T00:00:00.000Z",
-      end: "2013-10-01T00:00:00.000Z",
-      countries: ['França', 'Itália'],
-      cities: ['Paris', 'Lyon', 'Veneza', 'Roma']
-    },
-    { //2
-      name: 'Viagem com a família',
-      start: "2013-10-01T00:00:00.000Z",
-      end: "2013-10-01T00:00:00.000Z",
-      countries: ['França', 'Itália'],
-      cities: ['Paris', 'Lyon', 'Veneza', 'Roma']
-    },
-    { //3
-      name: 'Viagem com a família',
-      start: "2013-10-01T00:00:00.000Z",
-      end: "2013-10-01T00:00:00.000Z",
-      countries: ['França', 'Itália'],
-      cities: ['Paris', 'Lyon', 'Veneza', 'Roma']
-    }
-  ])
+  const [travels, setTravels] = useState()
 
   useEffect(() => {
-    if(route.params?.travel) setTravels([route.params.travel, ...travels])
+    if(route.params?.travel) {
+      setTravels(travels ? [route.params.travel, ...travels] : [route.params.travel])
+    }
   }, [route.params])
+
+  useEffect(async () => {
+    if(!travels){
+      const token = await AsyncStorage.getItem('@token')
+      api.get('/travel',{
+        headers:{
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          if(response.data) setTravels(response.data)
+        })
+        .catch(err => console.log(err))
+    }
+  }, [])
 
   return (
     <>
     <View style={styles.container}>
-      <View style={styles.topBar}>
-        <Text style={styles.title}>Selecione Sua Viagem</Text>
-        <Pressable 
-          onPress={() => setModal(true)}
-          style={({pressed}) => [styles.filterButton, { backgroundColor: pressed ? '#2B529D' : '#3E67B1'}]}
-          >
-          <Text style={styles.filterButtonText}>Filtros</Text>
-        </Pressable>
-      </View>
+      <Header
+        title="Selecione sua viagem"
+        left="Voltar"
+        onLeft={() => navigation.navigate('TelaInicio')}
+        right="Filtros"
+        onRight={() => setModal(true)}
+        />
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContainer}>
-        {travels.filter(travel => {
+        {travels && travels.filter(travel => {
           if(start.length >= 10 && end.length >= 10) {
             const travelStart = new Date(travel.start);
             const range = {
               start: new Date(start),
               end: new Date(end)
             }
-            console.log(range)
             return travelStart >= range.start && travelStart <= range.end
           }else{
             return true
           }
         }).map((travel, index) => (
           <Pressable
-            key={travel.name + index}
+            key={`${travel.name}${index}`}
             onPress={() => navigation.navigate('TravelFiles', {travel})}
             style={styles.travelCard}
             >
@@ -111,25 +97,19 @@ const TravelList = ({navigation, route}) => {
           <Text style={styles.modalText}>Data Inicial</Text>
           <TextInput
             style={styles.modalInput}
-            placeholder="DD/MM/AAAA"
+            placeholder="MM/DD/AAAA"
             onChangeText={(text) => setStart(text)}
           />
           <Text style={styles.modalText}>Data Final</Text>
           <TextInput
             style={styles.modalInput}
-            placeholder="DD/MM/AAAA"
+            placeholder="MM/DD/AAAA"
             onChangeText={(text) => setEnd(text)}
           />
           <Button text="Fechar" onPress={() => setModal(!modal)}/>
         </View>
       </View>
     </Modal>
-    {/* {modal && 
-      <>
-        <Pressable style={styles.backdrop} onPress={() => setModal(false)}>
-        </Pressable>
-      </>
-    } */}
     </>
   )
 }

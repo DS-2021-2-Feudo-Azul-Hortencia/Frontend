@@ -6,23 +6,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     zIndex:0
   },
-  topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignContent: 'center',
-    backgroundColor: '#2B529D'
-  },
-  title: {
-    flex:1,
-    fontSize: 20,
-    width: '100%',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    color: '#fff',
-    fontWeight: 'bold'
-  },
+  
   scroll: {
     flex: 1,
     backgroundColor: 'rgb(169, 155, 252)',
@@ -31,18 +15,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: 'center',
     alignItems: 'center'
-  },
-  filterButton: {
-    height: 20,
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderLeftWidth: 1
-  },
-  filterButtonText: {
-    fontSize: 16,
-    paddingHorizontal: 20,
-    color: '#fff',
   },
   travelCard: {
     width: '95%',
