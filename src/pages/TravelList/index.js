@@ -1,45 +1,82 @@
-import {useState} from 'react';
-import { Text, View, ScrollView, Pressable, Image} from 'react-native'
+import {useState, useEffect} from 'react';
+import { Text, View, ScrollView, Pressable, Image, Modal, TextInput} from 'react-native'
 import styles from './styles';
 
-const TravelList = () => {
-  const handleFilter = () => {
-    alert('Clicou no filter')
-  }
+import Button from '../../components/Button';
+
+const TravelList = ({navigation, route}) => {
+  const [start, setStart] = useState('');
+  const [end, setEnd] = useState('');
+
+  const [modal, setModal] = useState(false)
 
   const [travels, setTravels] = useState([
     { //0
       name: 'Viagem da firma',
-      initialDate: '01/04/2022',
-      finalDate: '15/04/2022',
+      start: "2013-10-01T00:00:00.000Z",
+      end: "2013-10-01T00:00:00.000Z",
       countries: ['Argentina', 'Brasil', 'Chile'],
-      cities: ['Ushuaia', 'El Calafate']
+      cities: ['Ushuaia', 'El Calafate'],
+      files: [
+        
+      ]
     },
     { //1
       name: 'Viagem com a família',
-      initialDate: '01/06/2035',
-      finalDate: '15/06/2035',
+      start: "2013-10-01T00:00:00.000Z",
+      end: "2013-10-01T00:00:00.000Z",
+      countries: ['França', 'Itália'],
+      cities: ['Paris', 'Lyon', 'Veneza', 'Roma']
+    },
+    { //2
+      name: 'Viagem com a família',
+      start: "2013-10-01T00:00:00.000Z",
+      end: "2013-10-01T00:00:00.000Z",
+      countries: ['França', 'Itália'],
+      cities: ['Paris', 'Lyon', 'Veneza', 'Roma']
+    },
+    { //3
+      name: 'Viagem com a família',
+      start: "2013-10-01T00:00:00.000Z",
+      end: "2013-10-01T00:00:00.000Z",
       countries: ['França', 'Itália'],
       cities: ['Paris', 'Lyon', 'Veneza', 'Roma']
     }
   ])
 
+  useEffect(() => {
+    if(route.params?.travel) setTravels([route.params.travel, ...travels])
+  }, [route.params])
+
   return (
+    <>
     <View style={styles.container}>
       <View style={styles.topBar}>
         <Text style={styles.title}>Selecione Sua Viagem</Text>
         <Pressable 
-          onPress={handleFilter}
+          onPress={() => setModal(true)}
           style={({pressed}) => [styles.filterButton, { backgroundColor: pressed ? '#2B529D' : '#3E67B1'}]}
           >
           <Text style={styles.filterButtonText}>Filtros</Text>
         </Pressable>
       </View>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContainer}>
-        {travels.map((travel, index) => (
+        {travels.filter(travel => {
+          if(start.length >= 10 && end.length >= 10) {
+            const travelStart = new Date(travel.start);
+            const range = {
+              start: new Date(start),
+              end: new Date(end)
+            }
+            console.log(range)
+            return travelStart >= range.start && travelStart <= range.end
+          }else{
+            return true
+          }
+        }).map((travel, index) => (
           <Pressable
             key={travel.name + index}
-            onPress={() => alert(`Viagem ${travel.name} selecionada`)}
+            onPress={() => navigation.navigate('TravelFiles', {travel})}
             style={styles.travelCard}
             >
               <View style={styles.cardBackground}>
@@ -52,13 +89,48 @@ const TravelList = () => {
               <View style={styles.cardInfo}>
                 <Text style={styles.cardTitle}>{travel.name}</Text>
                 <Text style={styles.cardText}>País: {travel.countries.join(', ')} ({travel.cities.join(', ')})</Text>
-                <Text style={styles.cardText}>Início: {travel.initialDate}</Text>
-                <Text style={styles.cardText}>Fim: {travel.finalDate}</Text>
+                <Text style={styles.cardText}>Início: {new Date(travel.start).toLocaleDateString("pt-BR")}</Text>
+                <Text style={styles.cardText}>Fim: {new Date(travel.end).toLocaleDateString("pt-BR")}</Text>
               </View>
           </Pressable>
         ))}
       </ScrollView>
     </View>
+    <Modal
+      onDismiss={() => setModal(false)}
+      visible={modal}
+      onRequestClose={() => setModal(false)}
+      animationType="slide"
+      style={styles.modal}
+      transparent
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalTitle}>Filtro</Text>
+
+          <Text style={styles.modalText}>Data Inicial</Text>
+          <TextInput
+            style={styles.modalInput}
+            placeholder="DD/MM/AAAA"
+            onChangeText={(text) => setStart(text)}
+          />
+          <Text style={styles.modalText}>Data Final</Text>
+          <TextInput
+            style={styles.modalInput}
+            placeholder="DD/MM/AAAA"
+            onChangeText={(text) => setEnd(text)}
+          />
+          <Button text="Fechar" onPress={() => setModal(!modal)}/>
+        </View>
+      </View>
+    </Modal>
+    {/* {modal && 
+      <>
+        <Pressable style={styles.backdrop} onPress={() => setModal(false)}>
+        </Pressable>
+      </>
+    } */}
+    </>
   )
 }
 

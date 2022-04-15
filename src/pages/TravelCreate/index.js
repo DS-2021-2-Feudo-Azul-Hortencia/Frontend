@@ -4,13 +4,14 @@ import {View, Text, TextInput, Pressable} from 'react-native'
 //DateTimePickerAndroid.open(params: AndroidNativeProps)
 //DateTimePickerAndroid.dismiss(mode: AndroidNativeProps['mode'])
 
+import api from '../../services'
 
 import styles from './styles'
 
 
-const TravelCreate = () => {
+const TravelCreate = ({navigation}) => {
   const [travel, setTravel] = useState({
-    name: '',
+    travelName: '',
     initialDate: '',
     finalDate: '',
     country: '',
@@ -18,7 +19,15 @@ const TravelCreate = () => {
   })
 
   const handleSubmit = () => {
-    console.log(travel)
+    api.post('/travel/planning', {
+      ...travel,
+      start: (new Date(travel.initialDate)).toISOString(),
+      end: (new Date(travel.finalDate)).toISOString(),
+      countries: travel.country.split(','),
+      cities: travel.city.split(',')
+    }).then(response => {
+      navigation.navigate('TravelList', {travel: response.data.travel})
+    }).catch(err => console.log(err))
   }
 
   return (
@@ -26,9 +35,9 @@ const TravelCreate = () => {
       <Text style={styles.title}>Criar viagem</Text>
       <TextInput
         style={styles.input}
-        value={travel.name}
+        value={travel.travelName}
         placeholder="Nome da viagem"
-        onChangeText={name => setTravel({...travel, name})}
+        onChangeText={travelName => setTravel({...travel, travelName})}
       />
       <TextInput
         style={styles.input}
@@ -62,7 +71,6 @@ const TravelCreate = () => {
       </Pressable>
     </View>
   )
-//fazer para cada textInput o que foi feito para o name.
 }
 
 export default TravelCreate

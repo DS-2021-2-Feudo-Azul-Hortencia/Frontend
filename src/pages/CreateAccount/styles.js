@@ -17,43 +17,28 @@ const styles = StyleSheet.create({
       fontSize: 50,
     },
 
-    buttons:{
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '90%',
-      paddingBottom: 90,
-    },
+    subtitle: {
+        fontSize: 30,
+        marginBottom: 20,
+      },
+
+    form: {
+        width: '90%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 50,
+      },
 
     input:{
       backgroundColor: '#FFF',
+      height: 50,
       width: '90%',
       marginBottom: 15,
       color: '#222',
       borderRadius:7,
-      padding:10,
+      padding:20,
     },
 
-    btnSubmit: {
-      backgroundColor: '#35AAFF',
-      width: '90%',
-      height: 45,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 7,
-    },
-
-    btnSubmitText: {
-      color:'#FFF',
-    },
-
-    btnRegister: {
-      marginTop: 10,
-    },
-
-    btnRegisterText: {
-      color: '#FFF',
-    },
   });
 
   export default styles

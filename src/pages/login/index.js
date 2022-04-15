@@ -7,12 +7,16 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Animated,
+  Animated
 } from "react-native";
+
+import Button from '../../components/Button';
 
 import api from '../../services';
 
 import styles from "./styles";
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login({ navigation }) {
   const [offset] = useState(new Animated.ValueXY({ x: 0, y: 95 }));
@@ -21,7 +25,7 @@ export default function Login({ navigation }) {
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
 
-  useEffect(() => {
+  useEffect(async () => {
     Animated.parallel([
       Animated.spring(offset.y, {
         toValue: 0,
@@ -33,27 +37,28 @@ export default function Login({ navigation }) {
         duration: 200,
       }),
     ]).start();
+
+    const token = await AsyncStorage.getItem('@token')
+    if(token) navigation.navigate('TelaInicio')
+
   }, []);
 
 
   const handleLogin = () => {
     if (login.length > 1 && password.length > 1){
-      // api.post('/user/authenticate', { login, password })
-      //   .then(response => {
-      //     alert('logou')
-      //     navigation.navigate('TravelCreate')
-      //     console.log(response.data)
-      //   })
-      //   .catch(err => {
-      //     alert('Usuário ou senha inválidos')
-      //     console.log(err)
-      //   })
+      api.post('/user/authenticate', { email: login, password })
+        .then(async response => {
+          await AsyncStorage.setItem('@token', response.data.token)
+          navigation.navigate('TelaInicio')
+        })
+        .catch(err => {
+          alert('Usuário ou senha inválidos')
+          console.log(err)
+        })
 
       //Como o token ainda não foi configurado, deixei comentada a parte da integração e coloquei a transição
       //entre a tela de login e de criação de tela no automático
 
-
-      navigation.navigate('TravelCreate')
     } else {
       alert('Usuário e senha devem ter mais de 1 caractere.')
     }
@@ -90,13 +95,8 @@ export default function Login({ navigation }) {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity style={styles.btnSubmit} onPress={handleLogin}>
-          <Text style={styles.btnSubmitText}>Acessar</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.btnRegister}>
-          <Text style={styles.btnRegisterText}>Criar sua conta</Text>
-        </TouchableOpacity>
+        <Button text="Acessar" onPress={handleLogin} />
+        <Button text="Criar sua conta" onPress={() => navigation.navigate('CreateAccount')} />
       </Animated.View>
     </KeyboardAvoidingView>
   );
