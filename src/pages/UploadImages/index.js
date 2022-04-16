@@ -8,8 +8,9 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker";
 import axios from "axios";
+import Toast from 'react-native-toast-message';
+import { launchImageLibrary } from "react-native-image-picker";
 
 import DefaultImage from "../../assets/document_icon.png";
 import style from "./style";
@@ -34,7 +35,7 @@ const createFormData = (photo, body = {}) => {
   return data;
 };
 
-const UploadImages = () => {
+const UploadImages = ({ navigation }) => {
   const [photo, setPhoto] = React.useState(null);
   const [name, setName] = useState("");
 
@@ -70,10 +71,20 @@ const UploadImages = () => {
             url,
             fileName,
             user: '625781c009dd7b412f1f9162'
-         });     
+         });
+         
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'ListFiles' }]
+          });
         }
       } catch (error) {
         console.log(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Erro',
+          text2: 'Não foi possível fazer o envio do arquivo. Tente Novamente.'
+        });
       } 
       
    })()
@@ -114,12 +125,13 @@ const UploadImages = () => {
         )}
       </View>
       <TouchableOpacity
-        disabled={photo || name ? false : true}
+        // disabled={photo || name ? false : true}
         style={photo && name ? style.uploadImage : style.uploadImageDisabled}
         onPress={() => handleUploadPhoto()}
       >
         <Text style={style.textUploadBtn}>Enviar Arquivo</Text>
       </TouchableOpacity>
+      <Toast />
     </View>
   );
 };

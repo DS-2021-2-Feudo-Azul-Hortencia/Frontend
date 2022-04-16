@@ -27,7 +27,6 @@ export default function ListFiles({ navigation }) {
       const response = await axios.get(
         "http://192.168.1.67:3003/file/user/all-files?id=625781c009dd7b412f1f9162"
       );
-      console.log(response.data.files);
       setImages(
         response && response.data && response.data.files
           ? response.data.files
@@ -57,7 +56,7 @@ export default function ListFiles({ navigation }) {
           <ScrollView>
             <View style={styles.imagesWrapper}>
               {images.map((image) => (
-                <View>
+                <View key={image._id}>
                   <TouchableOpacity
                     onPress={() => {
                       setModalVisible(true);

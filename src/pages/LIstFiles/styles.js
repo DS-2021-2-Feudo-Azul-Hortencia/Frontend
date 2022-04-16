@@ -12,7 +12,8 @@ export default StyleSheet.create({
   },
   btnUploadWrapper: {
     width: '100%',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
+    marginBottom: 10
   },
   uploadBtn: {
     justifyContent: 'center',
@@ -34,7 +35,7 @@ export default StyleSheet.create({
   },
   imagesWrapper: {
     justifyContent: "space-between",
-    height: heightScreen * 0.9,
+    height: heightScreen + 50,
     flexDirection: "row",
     flexWrap: "wrap",
     width: "100%",
