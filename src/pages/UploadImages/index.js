@@ -54,7 +54,7 @@ const UploadImages = ({ navigation }) => {
       try {
           let response = await new Promise(resolve => {
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'http://192.168.1.67:3003/file/upload');
+            xhr.open('POST', 'https://backend-feudo-azul.herokuapp.com/file/upload');
             xhr.onload = function(e) {
               resolve(xhr.response);
             };
@@ -67,7 +67,7 @@ const UploadImages = ({ navigation }) => {
         
          if(response !== undefined) {
           const {url, fileName } = JSON.parse(response);
-          await axios.post('http://192.168.1.67:3003/file/user', {
+          await axios.post('https://backend-feudo-azul.herokuapp.com/file/user', {
             url,
             fileName,
             user: '625781c009dd7b412f1f9162'

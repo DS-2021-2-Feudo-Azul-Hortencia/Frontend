@@ -35,7 +35,7 @@ export default StyleSheet.create({
   },
   imagesWrapper: {
     justifyContent: "space-between",
-    height: heightScreen + 50,
+    height: '100%',
     flexDirection: "row",
     flexWrap: "wrap",
     width: "100%",

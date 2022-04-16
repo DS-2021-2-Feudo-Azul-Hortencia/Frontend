@@ -7,8 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
-  Pressable,
   ImageBackground,
+  ActivityIndicator
 } from "react-native";
 import axios from "axios";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -17,6 +17,7 @@ export default function ListFiles({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [images, setImages] = useState([]);
   const [urlImage, setUrlImage] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getFilesTravel();
@@ -25,14 +26,16 @@ export default function ListFiles({ navigation }) {
   const getFilesTravel = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.1.67:3003/file/user/all-files?id=625781c009dd7b412f1f9162"
+        "https://backend-feudo-azul.herokuapp.com/file/user/all-files?id=625781c009dd7b412f1f9162"
       );
       setImages(
         response && response.data && response.data.files
           ? response.data.files
           : []
       );
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log("error load images", error);
     }
   };
@@ -108,7 +111,11 @@ export default function ListFiles({ navigation }) {
         </>
       ) : (
         <View style={styles.noImageWrapper}>
-          <Text style={styles.noImagesText}>Não há arquivos</Text>
+          {loading ? (
+            <ActivityIndicator size="large" color="#333333AA" />
+          ) : (
+            <Text style={styles.noImagesText}>Não há arquivos</Text>
+          )}
         </View>
       )}
     </View>
