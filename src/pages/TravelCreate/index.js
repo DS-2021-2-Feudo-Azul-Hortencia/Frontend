@@ -22,12 +22,14 @@ const TravelCreate = ({navigation}) => {
 
   const handleSubmit = async () => {
     const token = await AsyncStorage.getItem('@token')
+    const user = await AsyncStorage.getItem('@user')
     api.post('/travel/planning', {
-      ...travel,
-      start: (new Date(travel.initialDate)).toISOString(),
-      end: (new Date(travel.finalDate)).toISOString(),
-      countries: travel.country.split(','),
-      cities: travel.city.split(',')
+      travelName: travel.travelName,
+      start: new Date(travel.initialDate).toISOString(),
+      end: new Date(travel.finalDate).toISOString(),
+      country: travel.country,
+      cities: travel.city,
+      user,
     }, {
       headers:{
         Authorization: `Bearer ${token}`

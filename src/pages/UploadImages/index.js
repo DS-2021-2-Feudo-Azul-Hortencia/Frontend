@@ -8,13 +8,14 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import axios from "axios";
 import Toast from 'react-native-toast-message';
 import { launchImageLibrary } from "react-native-image-picker";
+import api from '../../services';
 
 import DefaultImage from "../../assets/document_icon.png";
 import style from "./style";
 import styles from "./style";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const createFormData = (photo, body = {}) => {
   let data = new FormData();
@@ -35,7 +36,7 @@ const createFormData = (photo, body = {}) => {
   return data;
 };
 
-const UploadImages = ({ navigation }) => {
+const UploadImages = ({ navigation, route }) => {
   const [photo, setPhoto] = React.useState(null);
   const [name, setName] = useState("");
 
@@ -49,6 +50,7 @@ const UploadImages = ({ navigation }) => {
 
   const handleUploadPhoto = async () => {
     const formData = createFormData(photo, { name });
+    const userId = await AsyncStorage.getItem("@user");
 
     (async () => {
       try {
@@ -67,16 +69,19 @@ const UploadImages = ({ navigation }) => {
         
          if(response !== undefined) {
           const {url, fileName } = JSON.parse(response);
-          await axios.post('https://backend-feudo-azul.herokuapp.com/file/user', {
-            url,
-            fileName,
-            user: '625781c009dd7b412f1f9162'
-         });
-         
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'ListFiles' }]
-          });
+          try {
+
+              await api.post('/file/user', {
+                url,
+                fileName,
+                user: userId,
+                travel: route.params.travel._id
+              });
+          } catch (err) {
+            console.log("error", err);
+          }
+        
+          navigation.navigate('ListFiles', {travel: route.params.travel});
         }
       } catch (error) {
         console.log(error);
@@ -125,7 +130,7 @@ const UploadImages = ({ navigation }) => {
         )}
       </View>
       <TouchableOpacity
-        // disabled={photo || name ? false : true}
+        disabled={photo || name ? false : true}
         style={photo && name ? style.uploadImage : style.uploadImageDisabled}
         onPress={() => handleUploadPhoto()}
       >

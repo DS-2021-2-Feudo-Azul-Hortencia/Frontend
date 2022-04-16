@@ -1,57 +1,47 @@
 import {StyleSheet, Dimensions} from 'react-native'
+const {width, height} = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    zIndex:0
   },
-  
   scroll: {
-    flex: 1,
     backgroundColor: 'rgb(169, 155, 252)',
   },
   scrollContainer:{
-    flex: 1,
-    alignContent: 'center',
     alignItems: 'center'
   },
   travelCard: {
-    width: '95%',
-    backgroundColor: '#fff',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    borderRadius: 10,
-    marginVertical: 10
+    width: '90%',
+    marginVertical: 10,
   },
-  cardInfo: {
+  infoTravel: {
     backgroundColor: '#4A4D9C',
-    borderRadius: 10,
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
     padding: 10,
-    flex: 1
+  },
+  infoTravelText: {
+    fontSize: 14,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   cardBackground: {
     minHeight: 75
   },
   cardImage: {
-    width: '100%',
-    height: '100%',
+    width: width * 0.9,
+    height: width * 0.6,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10
   },
-  cardTitle:{
-    fontSize: 20,
-    color: '#fff',
-  },
-  cardText:{
-    fontSize: 16,
-    color: '#fff',
-  },
   centeredView: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
   },
   modalView: {
     width: '80%',

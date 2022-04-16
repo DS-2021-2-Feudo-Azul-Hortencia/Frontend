@@ -66,6 +66,7 @@ export default function CreateAccount({ navigation }) {
           autoCorrect={false}
           keyboardType="email"
           onChangeText={email => setData({...data, email})}
+          value={data.email}
         />
 
         <TextInput
@@ -73,21 +74,24 @@ export default function CreateAccount({ navigation }) {
           placeholder="Digite o seu nome"
           autoCorrect={false}
           onChangeText={name => setData({...data, name})}
-
+          value={data.name}
         />
 
         <TextInput
           style={styles.input}
           placeholder="Digite a sua senha"
           autoCorrect={false}
+          secureTextEntry={true}
           onChangeText={password => setData({...data, password})}
-
+          value={data.password}
         />
         <TextInput
           style={styles.input}
           placeholder="Confirme a sua senha"
           autoCorrect={false}
+          secureTextEntry={true}
           onChangeText={passwordConfirm => setData({...data, passwordConfirm})}
+          value={data.passwordConfirm}
         />
         {loading && <ActivityIndicator size="large" color="#00ff00" />}
         <Button text="Criar conta" onPress={handleCreate} disabled={loading}/>

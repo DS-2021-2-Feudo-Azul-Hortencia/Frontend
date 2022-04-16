@@ -45,6 +45,8 @@ export default function Login({ navigation }) {
       api.post('/user/authenticate', { email: login, password })
         .then(async response => {
           await AsyncStorage.setItem('@user', response.data.user._id);
+          setLogin('');
+          setPassword('');
           navigation.navigate('TelaInicio')
         })
         .catch(err => {
@@ -81,6 +83,7 @@ export default function Login({ navigation }) {
           style={styles.input}
           placeholder="Email"
           autoCorrect={false}
+          value={login}
           onChangeText={setLogin}
         />
 
@@ -88,6 +91,8 @@ export default function Login({ navigation }) {
           style={styles.input}
           placeholder="Senha"
           autoCorrect={false}
+          value={password}
+          secureTextEntry={true}
           onChangeText={setPassword}
         />
 

@@ -12,21 +12,29 @@ import {
 } from "react-native";
 import axios from "axios";
 import Icon from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from '../../services';
+import { useFocusEffect } from "@react-navigation/native";
 
-export default function ListFiles({ navigation }) {
+export default function ListFiles({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [images, setImages] = useState([]);
   const [urlImage, setUrlImage] = useState("");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    getFilesTravel();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getFilesTravel();
+    }, [])
+  );
 
   const getFilesTravel = async () => {
+    const userId = await AsyncStorage.getItem("@user");
+    const travelId = route.params.travel._id;
+
     try {
-      const response = await axios.get(
-        "https://backend-feudo-azul.herokuapp.com/file/user/all-files?id=625781c009dd7b412f1f9162"
+      const response = await api.get(
+        `/file/user/all-files?userId=${userId}&travelId=${travelId}`
       );
       setImages(
         response && response.data && response.data.files
@@ -42,10 +50,12 @@ export default function ListFiles({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titleTravel}>Viagem: Havaí 20/03/2022</Text>
+      <Text style={styles.titleTravel}>Viagem: {route.params.travel.travelName}</Text>
       <View style={styles.btnUploadWrapper}>
         <TouchableOpacity
-          onPress={() => navigation.navigate("UploadFiles")}
+          onPress={() => navigation.navigate("UploadFiles", {
+            travel: route.params.travel
+          })}
           style={styles.uploadBtn}
         >
           <Icon name="upload" size={20} color="#333" />
